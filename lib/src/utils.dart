@@ -1,13 +1,11 @@
 import 'dart:math' as math;
 
 class HeatmapCalendarLocationCalclator {
-  static final _protoSunday = DateTime(2023, 3, 5);
-  static final _protoSundayUTC = DateTime.utc(2023, 3, 5);
+  static final protoSunday = DateTime(2023, 3, 5);
 
   final DateTime startDate;
   final DateTime endedDate;
   final int firstDay;
-  final bool withUTC;
   final Map<DateTime, int> _columnCache = {};
   final Map<DateTime, int> _rowCache = {};
 
@@ -15,10 +13,7 @@ class HeatmapCalendarLocationCalclator {
     required this.startDate,
     required this.endedDate,
     required this.firstDay,
-    required this.withUTC,
-  })  : assert(firstDay > 0 && firstDay <= 7),
-        assert(startDate.isUtc == endedDate.isUtc),
-        assert(startDate.isUtc == withUTC);
+  }) : assert(firstDay > 0 && firstDay <= 7);
 
   int get offsetRowWithStartDate => getOffsetRow(startDate);
 
@@ -26,6 +21,7 @@ class HeatmapCalendarLocationCalclator {
 
   int get offsetColumnWithEndDate => getOffsetColumn(endedDate);
 
+  ///当前日期 在第几行
   int getOffsetRow(DateTime date) {
     if (_rowCache.containsKey(date)) return _rowCache[date]!;
     var offset = (date.weekday + 7 - firstDay) % 7;
@@ -33,6 +29,7 @@ class HeatmapCalendarLocationCalclator {
     return offset;
   }
 
+  ///当前日期 在第几列
   int getOffsetColumn(DateTime date, {int? offsetRow}) {
     if (_columnCache.containsKey(date)) return _columnCache[date]!;
     var dateF = date.subtract(Duration(days: offsetRow ?? getOffsetRow(date)));
@@ -42,6 +39,7 @@ class HeatmapCalendarLocationCalclator {
     return offsetWeek;
   }
 
+  ///根据行号，获取当前日期在星期几
   int getDateWeekdyByOffsetRow(int offsetRow) => (offsetRow - 7 + firstDay) % 7;
 
   DateTime getDateTimeByOffset(int offsetRow, int offsetColumn) {
@@ -60,21 +58,18 @@ class HeatmapCalendarLocationCalclator {
 
   DateTime getProtoDateByOffsetRow(int offsetRow) {
     var weekday = getDateWeekdyByOffsetRow(offsetRow);
-    return (withUTC ? _protoSundayUTC : _protoSunday)
-        .add(Duration(days: weekday));
+    return protoSunday.add(Duration(days: weekday));
   }
 
   HeatmapCalendarLocationCalclator copyWith({
     DateTime? startDate,
     DateTime? endedDate,
     int? firstDay,
-    bool? withUTC,
   }) {
     return HeatmapCalendarLocationCalclator(
       startDate: startDate ?? this.startDate,
       endedDate: endedDate ?? this.endedDate,
       firstDay: firstDay ?? this.firstDay,
-      withUTC: withUTC ?? this.withUTC,
     );
   }
 }

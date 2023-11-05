@@ -35,9 +35,9 @@ class MonthLabelItem extends StatelessWidget {
         height: innderHeight,
         child: DefaultTextStyle(
           style:
-              TextStyle(color: monthLabelColor, fontSize: monthLabelFontSize),
+          TextStyle(color: monthLabelColor, fontSize: monthLabelFontSize),
           child: monthLabelItemBuilder?.call(
-                  context, date, format.pattern ?? '') ??
+              context, date, format.pattern ?? '') ??
               Text(format.format(date)),
         ),
       ),
@@ -80,14 +80,11 @@ class MonthLabelRow extends StatelessWidget {
       dateMap[model.getOffsetColumn(model.startDate)] = model.startDate;
     }
     var tmpDate = model.startDate;
-    while (tmpDate.isBefore(model.endedDate)) {
-      if (model.withUTC) {
-        tmpDate = DateTime.utc(tmpDate.year, tmpDate.month + 1, 1);
-      } else {
-        tmpDate = DateTime(tmpDate.year, tmpDate.month + 1, 1);
-      }
-      dateMap[model.getOffsetColumn(tmpDate)] = tmpDate;
+    while (tmpDate.isBefore(model.endedDate) || tmpDate.millisecondsSinceEpoch == model.endedDate.millisecondsSinceEpoch) {
+      dateMap[model.getOffsetColumn(tmpDate)] = tmpDate;//添加小于end的
+      tmpDate = DateTime(tmpDate.year, tmpDate.month + 1, 1);
     }
+    // dateMap[model.getOffsetColumn(model.endedDate)] = model.endedDate;//直接加个最后的
 
     var children = <Widget>[];
     var columns = model.offsetColumnWithEndDate + 1;
@@ -102,8 +99,9 @@ class MonthLabelRow extends StatelessWidget {
     var maxColumnIndex = model.offsetColumnWithEndDate;
     while (columnIndex <= maxColumnIndex) {
       var cellPadding = getCellPadding?.call(columnIndex) ?? EdgeInsets.zero;
+      var gapCount = columns - columnIndex;
       if (dateMap.containsKey(columnIndex) &&
-          (columns - columnIndex) >= labelTextSizeMultiple) {
+          gapCount >= 0) { //labelTextSizeMultiple 相当于说月的宽度占据多少个cell,这里是3个
         var date = dateMap[columnIndex]!;
         var format = getFormat?.call(date) ?? DateFormat.yM();
         children.add(MonthLabelItem(
@@ -111,8 +109,9 @@ class MonthLabelRow extends StatelessWidget {
           monthLabelColor: monthLabelColor,
           monthLabelFontSize: monthLabelFontSize,
           padding: cellPadding,
-          innderWidth: cellSize.width * labelTextSizeMultiple +
-              cellSpaceBetween * (labelTextSizeMultiple - 1),
+          innderWidth: (columns - columnIndex) >= labelTextSizeMultiple?cellSize.width * labelTextSizeMultiple +
+              cellSpaceBetween * (labelTextSizeMultiple - 1):gapCount * cellSize.width+(gapCount-1)*
+              cellSpaceBetween,
           format: format,
           monthLabelItemBuilder: monthLabelItemBuilder,
         ));
