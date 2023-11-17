@@ -100,8 +100,7 @@ class MonthLabelRow extends StatelessWidget {
     while (columnIndex <= maxColumnIndex) {
       var cellPadding = getCellPadding?.call(columnIndex) ?? EdgeInsets.zero;
       var gapCount = columns - columnIndex;
-      if (dateMap.containsKey(columnIndex) &&
-          gapCount >= 0) { //labelTextSizeMultiple 相当于说月的宽度占据多少个cell,这里是3个
+      if (dateMap.containsKey(columnIndex)) { //labelTextSizeMultiple 相当于说月的宽度占据多少个cell,这里是3个
         var date = dateMap[columnIndex]!;
         var format = getFormat?.call(date) ?? DateFormat.yM();
         children.add(MonthLabelItem(
@@ -109,13 +108,15 @@ class MonthLabelRow extends StatelessWidget {
           monthLabelColor: monthLabelColor,
           monthLabelFontSize: monthLabelFontSize,
           padding: cellPadding,
-          innderWidth: (columns - columnIndex) >= labelTextSizeMultiple?cellSize.width * labelTextSizeMultiple +
-              cellSpaceBetween * (labelTextSizeMultiple - 1):gapCount * cellSize.width+(gapCount-1)*
-              cellSpaceBetween,
+          // innderWidth: (columns - columnIndex) >= labelTextSizeMultiple?cellSize.width * labelTextSizeMultiple +
+          //     cellSpaceBetween * (labelTextSizeMultiple - 1):gapCount * cellSize.width+(gapCount-1)*
+          //     cellSpaceBetween,
+          innderWidth:cellSize.width,//妈的，这里大小直接认为和cell一样大了
           format: format,
           monthLabelItemBuilder: monthLabelItemBuilder,
         ));
-        columnIndex += labelTextSizeMultiple;
+        // columnIndex += labelTextSizeMultiple;
+        columnIndex += 1;
       } else {
         children.add(
           Padding(

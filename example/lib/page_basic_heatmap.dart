@@ -104,12 +104,32 @@ class _BasicHeatmapPage extends State<BasicHeatmapPage> {
                 children: [
                   const ListTile(title: Text("Scaled")),
                   HeatmapCalendar<num>(
-                    startDate: DateTime(2023, 1, 1),
-                    endedDate: DateTime(2023, 12, 1),
+                    startDate: DateTime(2022, 11, 1),
+                    endedDate: DateTime(2023, 12, 2),
                     firstDay: DateTime.monday,
                     // weekLabalCellSize: Size.fromWidth(1),
                     // cellSize: Size.square(16),//每个格子的大小
-                    colorTipCellSize: const Size.square(16),
+                    // colorTipCellSize: const Size.square(16),
+
+                    colorMap: {
+                      1:Colors.black,
+                      10: Colors.grey,
+                      20: Colors.red.shade300,
+                      30: Colors.red.shade500,
+                      40: Colors.red.shade700,
+                      // 50: Colors.red.shade900,
+                      50: Colors.blue,
+                    },
+                    selectedMap: {
+                      DateTime(2023, 4, 1): 1,
+                      DateTime(2023, 4, 2): 9,
+                      DateTime(2023, 4, 3): 12,
+                      DateTime(2023, 4, 4): 25,
+                      DateTime(2023, 4, 5): 35,
+                      DateTime(2023, 4, 6): 42,
+                      DateTime(2023, 4, 7): 999,
+                    },
+
                     layoutParameters: const HeatmapLayoutParameters.defaults(
                       monthLabelPosition: CalendarMonthLabelPosition.top,
                       // weekLabelPosition: CalendarWeekLabelPosition.right,
@@ -121,7 +141,7 @@ class _BasicHeatmapPage extends State<BasicHeatmapPage> {
 
                     ),
                     switchParameters: const HeatmapSwitchParameters.defaults(
-                      showCellText: true,//格子里是否显示值
+                      showCellText: false,//格子里是否显示值
 
 
                       // autoScaled: true,

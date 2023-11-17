@@ -854,6 +854,7 @@ class _HeatmapCalendar<T extends Comparable<T>>
           cellItemBuilder: widget.cellBuilder,
         );
       },
+      //直接间隔
       separatorBuilder: (context, index) {
         // if (index == 0 || index >= itemMaxIndex) {
         //   return const SizedBox();
