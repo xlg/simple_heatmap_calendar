@@ -104,11 +104,12 @@ class _BasicHeatmapPage extends State<BasicHeatmapPage> {
                 children: [
                   const ListTile(title: Text("Scaled")),
                   HeatmapCalendar<num>(
-                    startDate: DateTime(2022, 11, 1),
-                    endedDate: DateTime(2023, 12, 2),
+                    startDate: DateTime(2023, 10, 20),
+                    endedDate: DateTime(2023, 12, 1),
                     firstDay: DateTime.monday,
                     // weekLabalCellSize: Size.fromWidth(1),
-                    // cellSize: Size.square(16),//每个格子的大小
+                    cellSize: Size.square(12),//每个格子的大小
+                    cellSpaceBetween: 4,
                     // colorTipCellSize: const Size.square(16),
 
                     colorMap: {
@@ -146,12 +147,24 @@ class _BasicHeatmapPage extends State<BasicHeatmapPage> {
 
                       // autoScaled: true,
                     ),
-                    monthLabelItemBuilder: (context, date, defaultFormat) =>
-                        FittedBox(
-                          alignment: Alignment.centerLeft,
-                          fit: BoxFit.scaleDown,
-                          child: Text(DateFormat(defaultFormat).format(date)),
+                    // monthLabelItemBuilder: (context, date, defaultFormat) =>
+                    //     FittedBox(
+                    //       alignment: Alignment.centerLeft,
+                    //       fit: BoxFit.scaleDown,
+                    //       child: Text(DateFormat(defaultFormat).format(date)),
+                    //     ),
+                    monthLabelItemBuilder: (context, date, defaultFormat) {
+                      print('日期 => $date');
+                      return Center(child: Padding(
+                        padding: EdgeInsets.only(bottom: 3),
+                        child: Text(
+                          '${date.month}',
+                          // '${DateFormat(defaultFormat).format(date)}',
+                          style: TextStyle(fontSize: 9,color: Colors.grey),
                         ),
+                      ),);
+                    },
+
                     callbackModel: HeatmapCallbackModel(//点击回调
                       onCellPressed: (date, value) {
                         print('date=$date,value$value');
@@ -160,6 +173,7 @@ class _BasicHeatmapPage extends State<BasicHeatmapPage> {
                         print('date=$date,value$value');
                       },
                     ),
+
                     // weekLabelValueBuilder: ( BuildContext context,
                     //     DateTime protoDate,
                     //     String defaultFormat,){

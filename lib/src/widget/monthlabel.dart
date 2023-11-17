@@ -116,7 +116,7 @@ class MonthLabelRow extends StatelessWidget {
           monthLabelItemBuilder: monthLabelItemBuilder,
         ));
         // columnIndex += labelTextSizeMultiple;
-        columnIndex += 1;
+        // columnIndex += 1;
       } else {
         children.add(
           Padding(
@@ -126,12 +126,13 @@ class MonthLabelRow extends StatelessWidget {
             ),
           ),
         );
-        columnIndex += 1;
+        // columnIndex += 1;
       }
 
       if (columnIndex < maxColumnIndex) {
         children.add(SizedBox(width: cellSpaceBetween));
       }
+      columnIndex += 1;
     }
 
     if (offset != null &&
