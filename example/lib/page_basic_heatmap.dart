@@ -99,12 +99,13 @@ class _BasicHeatmapPage extends State<BasicHeatmapPage> {
           // ),
           Card(
             child: Padding(
-              padding: const EdgeInsets.all(10.0),
+              padding: const EdgeInsets.all(0.0),
               child: Column(
                 children: [
                   const ListTile(title: Text("Scaled")),
                   HeatmapCalendar<num>(
-                    startDate: DateTime(2023, 10, 20),
+                    sideGap: 22,
+                    startDate: DateTime(2022, 10, 20),
                     endedDate: DateTime(2023, 12, 1),
                     firstDay: DateTime.monday,
                     // weekLabalCellSize: Size.fromWidth(1),

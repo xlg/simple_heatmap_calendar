@@ -353,6 +353,7 @@ class HeatmapCalendar<T extends Comparable<T>> extends StatefulWidget {
   /// }
   /// ```
   final WeekLabelValueBuilder? weekLabelValueBuilder;
+  final double sideGap;
 
   const HeatmapCalendar({
     super.key,
@@ -383,6 +384,7 @@ class HeatmapCalendar<T extends Comparable<T>> extends StatefulWidget {
     this.cellBuilder,
     this.monthLabelItemBuilder,
     this.weekLabelValueBuilder,
+    this.sideGap = 0,
   })  : _controller = controller,
         assert(cellSize != Size.zero && cellSize != Size.infinite),
         assert(weekLabalCellSize != Size.zero &&
@@ -472,12 +474,15 @@ class _HeatmapCalendar<T extends Comparable<T>>
 
   Size get cellSize => _overlayCellSize ?? widget.cellSize;
 
+  double get sideGap => widget.sideGap;
+
   double get heatmapHeight =>
       maxDayOfWeek * cellSize.height + (maxDayOfWeek - 1) * cellSpaceBetween;
 
+  ///热力图的宽度
   double get heatmapWidth {
     var columnCount = model.offsetColumnWithEndDate + 1;
-    return calcHeatmapWidth(columnCount, cellSize.width, cellSpaceBetween);
+    return calcHeatmapWidth(columnCount, cellSize.width, cellSpaceBetween)+sideGap*2;
   }
 
   Size get weekLabelCellSize => widget.weekLabalCellSize ?? cellSize;
@@ -799,6 +804,16 @@ class _HeatmapCalendar<T extends Comparable<T>>
 
     return ListView.separated(
       itemBuilder: (context, columnIndex) {
+        if (sideGap > 0) {
+          if(columnIndex == 0 || columnIndex == itemMaxIndex + 1 + 2 -1 ){
+            return SizedBox(
+              width: sideGap-cellSpaceBetween,
+            );
+          }
+          columnIndex = columnIndex - 1;//关键，这里要减1，因为左右两边都有一个gap
+        }
+
+
         if (needBuildFromEnd) columnIndex = itemMaxIndex - columnIndex;
 
         if ((columnIndex == 0 &&
@@ -863,7 +878,7 @@ class _HeatmapCalendar<T extends Comparable<T>>
         return SizedBox(width: cellSpaceBetween);
       },
       reverse: needBuildFromEnd,
-      itemCount: itemMaxIndex + 1,
+      itemCount: sideGap > 0 ? itemMaxIndex + 1 + 2:itemMaxIndex + 1,//加了2个gap
       scrollDirection: Axis.horizontal,
       physics: canScroll ? null : const NeverScrollableScrollPhysics(),
       controller: controller,
@@ -876,8 +891,9 @@ class _HeatmapCalendar<T extends Comparable<T>>
       scrollDirection: Axis.horizontal,
       reverse: defaultLocation == CalendarScrollPosition.ended,
       physics: const NeverScrollableScrollPhysics(),
-      child: SizedBox(
+      child: Container(
         width: widgetWidth,
+        padding: EdgeInsets.symmetric(horizontal: sideGap),//月份标签，由于左右空出了边距，所以这里padding保持
         child: MonthLabelRow(
           model: model,
           offset: weekLabelWidth,
